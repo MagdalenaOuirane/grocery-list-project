@@ -53,7 +53,7 @@ const addNewItem = (e) => {
     displayAlert("Item added to the list", "success");
 
     //Add to local Storage
-    // addToLocalStorage(id,newItem);
+    addToLocalStorage(id, newItem);
 
     //set back to default
     setBackToDefault();
@@ -77,8 +77,9 @@ const addNewItem = (e) => {
     displayAlert("Item removed", "danger");
     setBackToDefault();
     //remove from Local Storage
-    // removeFromLocalStorage(id)
+    removeFromLocalStorage(id);
   }
+
 };
 
 function clearList(e) {
@@ -96,6 +97,7 @@ function clearList(e) {
   }
   container.remove("clearBtn");
   displayAlert("empty list", "danger");
+  //remove from local Storage
   localStorage.removeItem("list");
   setBackToDefault();
 }
@@ -118,12 +120,31 @@ function displayAlert(text, action) {
 
 // ******** LOCAL STORAGE *****************
 
-function addToLocacStorage(id, value) {
-  console.log("added to local Storage");
+function addToLocalStorage(id, newItem) {
+  const grocery = { id: id, value: newItem };
+
+  let items = getLocalStorage();
+
+  items.push(grocery);
+
+  localStorage.setItem("list", JSON.stringify(items));
 }
 
 function removeFromLocalStorage(id) {
-  console.log("removed from local Storage");
+  let items = getLocalStorage();
+
+  items = items.filter((item) => {
+    if (item.id !== id) {
+      return item;
+    }
+  });
+  localStorage.setItem("list", JSON.stringify(items));
+}
+
+function getLocalStorage() {
+  return localStorage.getItem("list")
+    ? JSON.parse(localStorage.getItem("list"))
+    : [];
 }
 
 // ******** EVENT LISTENERS ***************
